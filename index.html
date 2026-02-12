@@ -62,6 +62,11 @@
           <p data-en="Attend selected conference sessions and keynote presentations for free."
              data-it="Partecipa gratuitamente a sessioni selezionate della conferenza e alle presentazioni principali."></p>
         </div>
+        <div class="card">
+          <h3 data-en="Exclusive Gadgets" data-it="Gadget Esclusivi"></h3>
+          <p data-en="Receive exclusive EPC 2026 gadgets and merchandise as a thank-you for your contribution."
+             data-it="Ricevi gadget e merchandising esclusivi EPC 2026 come ringraziamento per il tuo contributo."></p>
+        </div>
       </div>
     </section>
 
@@ -87,6 +92,18 @@
       </div>
     </section>
 
+    <!-- QR Code -->
+    <section id="qrcode-section">
+      <div class="qr-container">
+        <h2 data-en="Scan to Register" data-it="Scansiona per Registrarti"></h2>
+        <p data-en="Scan this QR code with your phone to open the registration form directly."
+           data-it="Scansiona questo QR code con il telefono per aprire direttamente il modulo di registrazione."></p>
+        <div id="qrcode-box">
+          <img id="qr-img" alt="QR Code - Volunteer Registration" width="200" height="200">
+        </div>
+      </div>
+    </section>
+
     <!-- Sign Up Form -->
     <section id="signup">
       <div class="signup-section">
@@ -94,11 +111,7 @@
         <p data-en="Fill out the form below to register as a volunteer. We will get back to you with available shifts and more details."
            data-it="Compila il modulo qui sotto per registrarti come volontario. Ti contatteremo con i turni disponibili e maggiori dettagli."></p>
 
-        <form action="https://formsubmit.co/epc2026@unibo.it" method="POST" class="volunteer-form">
-          <!-- FormSubmit config -->
-          <input type="hidden" name="_subject" value="New EPC 2026 Volunteer Registration">
-          <input type="hidden" name="_captcha" value="true">
-          <input type="hidden" name="_template" value="table">
+        <form id="volunteer-form" class="volunteer-form">
           <input type="text" name="_honey" style="display:none">
 
           <div class="form-grid">
@@ -165,7 +178,16 @@
             </div>
           </div>
 
+          <div class="form-group full-width gdpr-group">
+            <label class="checkbox-label gdpr-label">
+              <input type="checkbox" id="gdpr-consent" required>
+              <span data-en="I consent to the processing of my personal data in accordance with the <strong>EU General Data Protection Regulation (GDPR)</strong>. My data will be used solely for the purpose of organizing volunteer activities for EPC 2026 and will not be shared with third parties. I understand I can request access, correction, or deletion of my data at any time by contacting <a href='mailto:epc2026@unibo.it'>epc2026@unibo.it</a>."
+                    data-it="Acconsento al trattamento dei miei dati personali ai sensi del <strong>Regolamento Generale sulla Protezione dei Dati (GDPR) dell&rsquo;UE</strong>. I miei dati saranno utilizzati esclusivamente per l&rsquo;organizzazione delle attivit&agrave; di volontariato per EPC 2026 e non saranno condivisi con terze parti. Comprendo di poter richiedere l&rsquo;accesso, la rettifica o la cancellazione dei miei dati in qualsiasi momento contattando <a href='mailto:epc2026@unibo.it'>epc2026@unibo.it</a>."></span>
+            </label>
+          </div>
+
           <button type="submit" class="submit-button" data-en="Submit Registration" data-it="Invia Registrazione"></button>
+          <div id="form-message" class="form-message" style="display:none;"></div>
         </form>
       </div>
     </section>

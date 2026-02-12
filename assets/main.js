@@ -1,3 +1,7 @@
+// === Configuration ===
+// IMPORTANT: After deploying the Google Apps Script, paste the web app URL here:
+const GOOGLE_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbwEUZ-FrWvV1EV7AjcAApIApzGPeLmdJsMKzO7x0JQ6lyf_1tJqAhJoTC4Fk0AMYcQG/exec';
+
 // === Language Switcher ===
 let currentLang = 'en';
 
@@ -30,6 +34,80 @@ document.querySelectorAll('.lang-btn').forEach(btn => {
 
 // Initialize with English
 setLanguage('en');
+
+// === QR Code Generation ===
+(function generateQR() {
+  const pageUrl = window.location.href.split('#')[0] + '#signup';
+  const qrImg = document.getElementById('qr-img');
+  if (qrImg) {
+    qrImg.src = 'https://api.qrserver.com/v1/create-qr-code/?size=200x200&data=' + encodeURIComponent(pageUrl);
+  }
+})();
+
+// === Form Submission to Google Sheets ===
+const form = document.getElementById('volunteer-form');
+const formMessage = document.getElementById('form-message');
+
+function showMessage(type, textEn, textIt) {
+  formMessage.className = 'form-message ' + type;
+  formMessage.textContent = currentLang === 'it' ? textIt : textEn;
+  formMessage.style.display = 'block';
+}
+
+form.addEventListener('submit', async function (e) {
+  e.preventDefault();
+
+  // Honeypot check
+  if (form.querySelector('[name="_honey"]').value) return;
+
+  const submitBtn = form.querySelector('.submit-button');
+  submitBtn.disabled = true;
+  submitBtn.textContent = currentLang === 'it' ? 'Invio in corso...' : 'Submitting...';
+  formMessage.style.display = 'none';
+
+  // Collect form data
+  const availability = [];
+  form.querySelectorAll('input[name="availability"]:checked').forEach(cb => {
+    availability.push(cb.value);
+  });
+
+  const payload = {
+    name: form.querySelector('#name').value,
+    email: form.querySelector('#email').value,
+    phone: form.querySelector('#phone').value,
+    affiliation: form.querySelector('#affiliation').value,
+    preferred_role: form.querySelector('#role').value,
+    availability: availability.join(', '),
+    notes: form.querySelector('#notes').value
+  };
+
+  try {
+    const response = await fetch(GOOGLE_SCRIPT_URL, {
+      method: 'POST',
+      mode: 'no-cors',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(payload)
+    });
+
+    // With no-cors mode, we can't read the response, so we assume success
+    showMessage(
+      'success',
+      'Registration submitted successfully! We will contact you soon.',
+      'Registrazione inviata con successo! Ti contatteremo presto.'
+    );
+    form.reset();
+
+  } catch (error) {
+    showMessage(
+      'error',
+      'Something went wrong. Please try again or email us at epc2026@unibo.it.',
+      'Qualcosa è andato storto. Riprova o scrivici a epc2026@unibo.it.'
+    );
+  } finally {
+    submitBtn.disabled = false;
+    submitBtn.textContent = currentLang === 'it' ? 'Invia Registrazione' : 'Submit Registration';
+  }
+});
 
 // === Smooth Scroll ===
 document.querySelectorAll('a[href^="#"]').forEach(anchor => {

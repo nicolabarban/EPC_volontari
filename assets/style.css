@@ -211,6 +211,36 @@ section p {
   margin-bottom: 0;
 }
 
+/* === QR Code Section === */
+.qr-container {
+  text-align: center;
+  padding: 40px 24px;
+  background: var(--bg-white);
+  border-radius: var(--radius);
+  box-shadow: var(--shadow);
+  border: 1px solid var(--border);
+  max-width: 400px;
+  margin: 0 auto;
+}
+
+.qr-container h2::after {
+  left: 50%;
+  transform: translateX(-50%);
+}
+
+#qrcode-box {
+  display: flex;
+  justify-content: center;
+  margin-top: 20px;
+}
+
+#qrcode-box img {
+  border-radius: 8px;
+  border: 4px solid var(--primary);
+  padding: 8px;
+  background: white;
+}
+
 /* === Signup Section === */
 .signup-section {
   background: linear-gradient(135deg, var(--primary) 0%, var(--primary-light) 100%);
@@ -352,6 +382,57 @@ section p {
   background: var(--accent-light);
   transform: translateY(-2px);
   box-shadow: 0 6px 24px rgba(0, 0, 0, 0.25);
+}
+
+/* === GDPR Consent === */
+.gdpr-group {
+  margin-top: 8px;
+}
+
+.gdpr-label {
+  align-items: flex-start;
+  font-size: 0.82rem;
+  line-height: 1.5;
+  background: rgba(255, 255, 255, 0.06);
+  padding: 14px 16px;
+}
+
+.gdpr-label input[type="checkbox"] {
+  margin-top: 3px;
+  flex-shrink: 0;
+}
+
+.gdpr-label a {
+  color: var(--accent-light);
+  text-decoration: underline;
+}
+
+/* === Form Messages === */
+.form-message {
+  margin-top: 16px;
+  padding: 14px 20px;
+  border-radius: 8px;
+  font-size: 0.95rem;
+  font-weight: 600;
+  text-align: center;
+}
+
+.form-message.success {
+  background: rgba(72, 187, 120, 0.2);
+  color: #c6f6d5;
+  border: 1px solid rgba(72, 187, 120, 0.4);
+}
+
+.form-message.error {
+  background: rgba(245, 101, 101, 0.2);
+  color: #fed7d7;
+  border: 1px solid rgba(245, 101, 101, 0.4);
+}
+
+.submit-button:disabled {
+  opacity: 0.7;
+  cursor: not-allowed;
+  transform: none;
 }
 
 /* === Footer === */

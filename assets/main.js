@@ -1,6 +1,6 @@
 // === Configuration ===
 // IMPORTANT: After deploying the Google Apps Script, paste the web app URL here:
-const GOOGLE_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbwEUZ-FrWvV1EV7AjcAApIApzGPeLmdJsMKzO7x0JQ6lyf_1tJqAhJoTC4Fk0AMYcQG/exec';
+const GOOGLE_SCRIPT_URL = 'https://script.google.com/macros/s/1Q6xey_NUJhEw-kN7-foxxbtogblxcR9TWb2T_zFTB0ZbXZCrNpJAAfDu/exec';
 
 // === Language Switcher ===
 let currentLang = 'en';
@@ -79,13 +79,24 @@ form.addEventListener('submit', function (e) {
     body: new URLSearchParams(payload).toString(),
     redirect: 'follow'
   })
-  .then(function () {
-    showMessage(
-      'success',
-      'Registration submitted successfully! You will receive a confirmation email shortly.',
-      'Registrazione inviata con successo! Riceverai a breve un\'email di conferma.'
-    );
-    form.reset();
+  .then(function (response) {
+    return response.json();
+  })
+  .then(function (data) {
+    if (data.result === 'success') {
+      showMessage(
+        'success',
+        'Registration submitted successfully! You will receive a confirmation email shortly.',
+        'Registrazione inviata con successo! Riceverai a breve un\'email di conferma.'
+      );
+      form.reset();
+    } else {
+      showMessage(
+        'error',
+        'Something went wrong. Please try again or email us at epc2026@unibo.it.',
+        'Qualcosa è andato storto. Riprova o scrivici a epc2026@unibo.it.'
+      );
+    }
   })
   .catch(function () {
     showMessage(

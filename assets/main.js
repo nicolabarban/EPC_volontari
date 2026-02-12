@@ -72,23 +72,32 @@ form.addEventListener('submit', function (e) {
     notes: form.querySelector('#notes').value
   };
 
-  // Build URL with query parameters (GET works reliably with Apps Script redirects)
-  var params = new URLSearchParams(payload).toString();
-  var submitUrl = GOOGLE_SCRIPT_URL + '?' + params;
-
-  // Use hidden image to trigger the GET request (avoids CORS issues)
-  var img = new Image();
-  img.onload = img.onerror = function () {
+  // Submit via POST (form-urlencoded)
+  fetch(GOOGLE_SCRIPT_URL, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+    body: new URLSearchParams(payload).toString(),
+    redirect: 'follow'
+  })
+  .then(function () {
     showMessage(
       'success',
       'Registration submitted successfully! You will receive a confirmation email shortly.',
       'Registrazione inviata con successo! Riceverai a breve un\'email di conferma.'
     );
     form.reset();
+  })
+  .catch(function () {
+    showMessage(
+      'error',
+      'Something went wrong. Please try again or email us at epc2026@unibo.it.',
+      'Qualcosa \u00e8 andato storto. Riprova o scrivici a epc2026@unibo.it.'
+    );
+  })
+  .finally(function () {
     submitBtn.disabled = false;
     submitBtn.textContent = currentLang === 'it' ? 'Invia Registrazione' : 'Submit Registration';
-  };
-  img.src = submitUrl;
+  });
 });
 
 // === Smooth Scroll ===

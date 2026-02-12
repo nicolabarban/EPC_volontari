@@ -72,42 +72,23 @@ form.addEventListener('submit', function (e) {
     notes: form.querySelector('#notes').value
   };
 
-  // Submit via hidden form + iframe (reliable with Google Apps Script)
-  var iframe = document.createElement('iframe');
-  iframe.name = 'form-submit-iframe';
-  iframe.style.display = 'none';
-  document.body.appendChild(iframe);
+  // Build URL with query parameters (GET works reliably with Apps Script redirects)
+  var params = new URLSearchParams(payload).toString();
+  var submitUrl = GOOGLE_SCRIPT_URL + '?' + params;
 
-  var hiddenForm = document.createElement('form');
-  hiddenForm.method = 'POST';
-  hiddenForm.action = GOOGLE_SCRIPT_URL;
-  hiddenForm.target = 'form-submit-iframe';
-  hiddenForm.style.display = 'none';
-
-  Object.entries(payload).forEach(function (entry) {
-    var input = document.createElement('input');
-    input.type = 'hidden';
-    input.name = entry[0];
-    input.value = entry[1];
-    hiddenForm.appendChild(input);
-  });
-
-  document.body.appendChild(hiddenForm);
-  hiddenForm.submit();
-
-  // Show success after a short delay (we can't read iframe response cross-origin)
-  setTimeout(function () {
-    document.body.removeChild(hiddenForm);
-    document.body.removeChild(iframe);
+  // Use hidden image to trigger the GET request (avoids CORS issues)
+  var img = new Image();
+  img.onload = img.onerror = function () {
     showMessage(
       'success',
-      'Registration submitted successfully! We will contact you soon.',
-      'Registrazione inviata con successo! Ti contatteremo presto.'
+      'Registration submitted successfully! You will receive a confirmation email shortly.',
+      'Registrazione inviata con successo! Riceverai a breve un\'email di conferma.'
     );
     form.reset();
     submitBtn.disabled = false;
     submitBtn.textContent = currentLang === 'it' ? 'Invia Registrazione' : 'Submit Registration';
-  }, 2000);
+  };
+  img.src = submitUrl;
 });
 
 // === Smooth Scroll ===

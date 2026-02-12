@@ -72,32 +72,20 @@ form.addEventListener('submit', function (e) {
     notes: form.querySelector('#notes').value
   };
 
-  // Submit via POST (form-urlencoded)
+  // Submit via POST (no-cors to avoid CORS block on Google's 302 redirect)
   fetch(GOOGLE_SCRIPT_URL, {
     method: 'POST',
+    mode: 'no-cors',
     headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
-    body: new URLSearchParams(payload).toString(),
-    redirect: 'follow'
+    body: new URLSearchParams(payload).toString()
   })
-  .then(function (response) {
-    return response.text().then(function (text) {
-      try {
-        var data = JSON.parse(text);
-        if (data.result === 'error') {
-          throw new Error(data.error || 'Server error');
-        }
-      } catch (e) {
-        // If JSON parsing fails but HTTP was OK, treat as success
-        // (Google Apps Script redirects can return non-JSON in browser)
-        if (!response.ok) throw e;
-      }
-      showMessage(
-        'success',
-        'Registration submitted successfully! You will receive a confirmation email shortly.',
-        'Registrazione inviata con successo! Riceverai a breve un\'email di conferma.'
-      );
-      form.reset();
-    });
+  .then(function () {
+    showMessage(
+      'success',
+      'Registration submitted successfully! You will receive a confirmation email shortly.',
+      'Registrazione inviata con successo! Riceverai a breve un\'email di conferma.'
+    );
+    form.reset();
   })
   .catch(function () {
     showMessage(

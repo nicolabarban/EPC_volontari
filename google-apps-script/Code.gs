@@ -13,7 +13,7 @@
  * 5. Copy the web app URL and paste it in assets/main.js (GOOGLE_SCRIPT_URL)
  */
 
-var SHEET_ID = 'G0nHTkaHAuRnjZuhNBpereUjJm9y-NfgfzBeR_7i224';
+var SHEET_ID = '1G0nHTkaHAuRnjZuhNBpereUjJm9y-NfgfzBeR_7i224';
 var SHEET_NAME = 'lista_volontari';
 
 function doPost(e) {
@@ -24,11 +24,10 @@ function doPost(e) {
     var sheet = SpreadsheetApp.openById(SHEET_ID).getSheetByName(SHEET_NAME);
 
     if (!sheet) {
-      // Create the tab if it doesn't exist
       sheet = SpreadsheetApp.openById(SHEET_ID).insertSheet(SHEET_NAME);
     }
 
-    var data = JSON.parse(e.postData.contents);
+    var data = e.parameter;
 
     // Add headers if sheet is empty
     if (sheet.getLastRow() === 0) {
@@ -42,7 +41,6 @@ function doPost(e) {
         'Availability',
         'Notes'
       ]);
-      // Bold the header row
       sheet.getRange(1, 1, 1, 8).setFontWeight('bold');
     }
 

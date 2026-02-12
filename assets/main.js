@@ -45,7 +45,7 @@ function showMessage(type, textEn, textIt) {
   formMessage.style.display = 'block';
 }
 
-form.addEventListener('submit', async function (e) {
+form.addEventListener('submit', function (e) {
   e.preventDefault();
 
   // Honeypot check
@@ -72,32 +72,42 @@ form.addEventListener('submit', async function (e) {
     notes: form.querySelector('#notes').value
   };
 
-  try {
-    const response = await fetch(GOOGLE_SCRIPT_URL, {
-      method: 'POST',
-      mode: 'no-cors',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify(payload)
-    });
+  // Submit via hidden form + iframe (reliable with Google Apps Script)
+  var iframe = document.createElement('iframe');
+  iframe.name = 'form-submit-iframe';
+  iframe.style.display = 'none';
+  document.body.appendChild(iframe);
 
-    // With no-cors mode, we can't read the response, so we assume success
+  var hiddenForm = document.createElement('form');
+  hiddenForm.method = 'POST';
+  hiddenForm.action = GOOGLE_SCRIPT_URL;
+  hiddenForm.target = 'form-submit-iframe';
+  hiddenForm.style.display = 'none';
+
+  Object.entries(payload).forEach(function (entry) {
+    var input = document.createElement('input');
+    input.type = 'hidden';
+    input.name = entry[0];
+    input.value = entry[1];
+    hiddenForm.appendChild(input);
+  });
+
+  document.body.appendChild(hiddenForm);
+  hiddenForm.submit();
+
+  // Show success after a short delay (we can't read iframe response cross-origin)
+  setTimeout(function () {
+    document.body.removeChild(hiddenForm);
+    document.body.removeChild(iframe);
     showMessage(
       'success',
       'Registration submitted successfully! We will contact you soon.',
       'Registrazione inviata con successo! Ti contatteremo presto.'
     );
     form.reset();
-
-  } catch (error) {
-    showMessage(
-      'error',
-      'Something went wrong. Please try again or email us at epc2026@unibo.it.',
-      'Qualcosa è andato storto. Riprova o scrivici a epc2026@unibo.it.'
-    );
-  } finally {
     submitBtn.disabled = false;
     submitBtn.textContent = currentLang === 'it' ? 'Invia Registrazione' : 'Submit Registration';
-  }
+  }, 2000);
 });
 
 // === Smooth Scroll ===

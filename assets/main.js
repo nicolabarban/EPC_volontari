@@ -80,23 +80,24 @@ form.addEventListener('submit', function (e) {
     redirect: 'follow'
   })
   .then(function (response) {
-    return response.json();
-  })
-  .then(function (data) {
-    if (data.result === 'success') {
+    return response.text().then(function (text) {
+      try {
+        var data = JSON.parse(text);
+        if (data.result === 'error') {
+          throw new Error(data.error || 'Server error');
+        }
+      } catch (e) {
+        // If JSON parsing fails but HTTP was OK, treat as success
+        // (Google Apps Script redirects can return non-JSON in browser)
+        if (!response.ok) throw e;
+      }
       showMessage(
         'success',
         'Registration submitted successfully! You will receive a confirmation email shortly.',
         'Registrazione inviata con successo! Riceverai a breve un\'email di conferma.'
       );
       form.reset();
-    } else {
-      showMessage(
-        'error',
-        'Something went wrong. Please try again or email us at epc2026@unibo.it.',
-        'Qualcosa è andato storto. Riprova o scrivici a epc2026@unibo.it.'
-      );
-    }
+    });
   })
   .catch(function () {
     showMessage(

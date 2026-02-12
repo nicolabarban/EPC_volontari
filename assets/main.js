@@ -1,6 +1,6 @@
 // === Configuration ===
 // IMPORTANT: After deploying the Google Apps Script, paste the web app URL here:
-const GOOGLE_SCRIPT_URL = 'https://script.google.com/macros/s/1Q6xey_NUJhEw-kN7-foxxbtogblxcR9TWb2T_zFTB0ZbXZCrNpJAAfDu/exec';
+const GOOGLE_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycby-EqL9ijmYC3UVeMd6gNTb5uSqLGb7WNJgIAVWQaJNtEVEONiXcO_cq2qDm7n6HwEa/exec';
 
 // === Language Switcher ===
 let currentLang = 'en';

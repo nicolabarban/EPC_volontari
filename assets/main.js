@@ -35,15 +35,6 @@ document.querySelectorAll('.lang-btn').forEach(btn => {
 // Initialize with English
 setLanguage('en');
 
-// === QR Code Generation ===
-(function generateQR() {
-  const pageUrl = window.location.href.split('#')[0] + '#signup';
-  const qrImg = document.getElementById('qr-img');
-  if (qrImg) {
-    qrImg.src = 'https://api.qrserver.com/v1/create-qr-code/?size=200x200&data=' + encodeURIComponent(pageUrl);
-  }
-})();
-
 // === Form Submission to Google Sheets ===
 const form = document.getElementById('volunteer-form');
 const formMessage = document.getElementById('form-message');

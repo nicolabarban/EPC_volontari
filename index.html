@@ -3,204 +3,266 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>EPC 2026 - Volunteer Registration | Bologna</title>
-  <link rel="stylesheet" href="assets/style.css">
+  <title>EPC 2026 Photo Gallery &middot; Bologna</title>
+  <style>
+    :root {
+      --bg: #16141a;
+      --card: #211e27;
+      --accent: #e8336d;
+      --text: #f3f0f7;
+      --muted: #a79fb3;
+    }
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body {
+      background: var(--bg);
+      color: var(--text);
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+    }
+    header {
+      text-align: center;
+      padding: 3rem 1rem 1.5rem;
+    }
+    header h1 {
+      font-size: clamp(1.6rem, 4vw, 2.6rem);
+      font-weight: 700;
+      letter-spacing: -0.02em;
+    }
+    header h1 span { color: var(--accent); }
+    header p { color: var(--muted); margin-top: 0.5rem; font-size: 1rem; }
+    nav {
+      position: sticky;
+      top: 0;
+      z-index: 10;
+      display: flex;
+      justify-content: center;
+      gap: 0.5rem;
+      padding: 0.8rem 1rem;
+      background: rgba(22, 20, 26, 0.92);
+      backdrop-filter: blur(8px);
+    }
+    nav button {
+      background: var(--card);
+      color: var(--muted);
+      border: 1px solid transparent;
+      border-radius: 999px;
+      padding: 0.55rem 1.3rem;
+      font-size: 0.95rem;
+      cursor: pointer;
+      transition: all 0.15s ease;
+    }
+    nav button:hover { color: var(--text); }
+    nav button.active {
+      background: var(--accent);
+      color: #fff;
+      font-weight: 600;
+    }
+    .count {
+      text-align: center;
+      color: var(--muted);
+      font-size: 0.85rem;
+      padding: 0.6rem 0 0.2rem;
+    }
+    .grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+      gap: 6px;
+      padding: 1rem;
+      max-width: 1500px;
+      margin: 0 auto;
+    }
+    .grid a {
+      display: block;
+      aspect-ratio: 3 / 2;
+      overflow: hidden;
+      border-radius: 6px;
+      background: var(--card);
+    }
+    .grid img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      display: block;
+      transition: transform 0.25s ease, opacity 0.4s ease;
+      opacity: 0;
+    }
+    .grid img.loaded { opacity: 1; }
+    .grid a:hover img { transform: scale(1.04); }
+    /* Lightbox */
+    .lightbox {
+      position: fixed;
+      inset: 0;
+      background: rgba(10, 9, 12, 0.96);
+      display: none;
+      align-items: center;
+      justify-content: center;
+      z-index: 100;
+    }
+    .lightbox.open { display: flex; }
+    .lightbox img {
+      max-width: 94vw;
+      max-height: 88vh;
+      border-radius: 4px;
+      box-shadow: 0 10px 50px rgba(0,0,0,0.6);
+    }
+    .lightbox .caption {
+      position: absolute;
+      bottom: 1.2rem;
+      left: 0;
+      right: 0;
+      text-align: center;
+      color: var(--muted);
+      font-size: 0.85rem;
+    }
+    .lb-btn {
+      position: absolute;
+      top: 50%;
+      transform: translateY(-50%);
+      background: rgba(255,255,255,0.08);
+      border: none;
+      color: var(--text);
+      font-size: 1.8rem;
+      width: 52px;
+      height: 52px;
+      border-radius: 50%;
+      cursor: pointer;
+      transition: background 0.15s;
+      line-height: 1;
+    }
+    .lb-btn:hover { background: rgba(255,255,255,0.18); }
+    #lb-prev { left: 1rem; }
+    #lb-next { right: 1rem; }
+    #lb-close {
+      position: absolute;
+      top: 1rem;
+      right: 1rem;
+      transform: none;
+    }
+    footer {
+      text-align: center;
+      color: var(--muted);
+      font-size: 0.85rem;
+      padding: 2rem 1rem 3rem;
+    }
+    @media (max-width: 600px) {
+      .grid { grid-template-columns: repeat(auto-fill, minmax(140px, 1fr)); gap: 4px; padding: 0.5rem; }
+      .lb-btn { width: 42px; height: 42px; font-size: 1.4rem; }
+    }
+  </style>
 </head>
 <body>
 
-  <!-- Language Switcher -->
-  <div class="lang-switcher">
-    <button class="lang-btn active" data-lang="en">EN</button>
-    <button class="lang-btn" data-lang="it">IT</button>
-  </div>
-
-  <!-- Header with Logos -->
-  <header class="header">
-    <div class="header-top">
-      <img src="assets/logo-alma.svg" alt="Alma Mater Studiorum - University of Bologna" class="logo-alma">
-      <img src="assets/epc-2026-poster.png" alt="European Population Conference 2026" class="logo-epc">
-    </div>
-    <div class="hero">
-      <h1 data-en="Volunteer with Us!" data-it="Diventa Volontario!"></h1>
-      <p class="subtitle" data-en="European Population Conference 2026" data-it="Conferenza Europea sulla Popolazione 2026"></p>
-      <p class="date-location" data-en="3&ndash;6 June 2026 &middot; Bologna, Italy" data-it="3&ndash;6 Giugno 2026 &middot; Bologna, Italia"></p>
-      <a href="#signup" class="cta-button" data-en="Sign Up as a Volunteer" data-it="Iscriviti come Volontario"></a>
-    </div>
+  <header>
+    <h1>EPC <span>2026</span> Photo Gallery</h1>
+    <p>European Population Conference &middot; 3&ndash;6 June 2026 &middot; Bologna, Italy</p>
   </header>
 
-  <!-- About -->
-  <main class="container">
-    <section id="about">
-      <h2 data-en="About the Conference" data-it="La Conferenza"></h2>
-      <p data-en="The European Population Conference (EPC) is the flagship event of the European Association for Population Studies (EAPS). In 2026, the conference will be hosted by the <strong>University of Bologna</strong> &mdash; the oldest university in the world, founded in 1088."
-         data-it="La European Population Conference (EPC) &egrave; l&rsquo;evento principale della European Association for Population Studies (EAPS). Nel 2026, la conferenza sar&agrave; ospitata dall&rsquo;<strong>Universit&agrave; di Bologna</strong> &mdash; la pi&ugrave; antica universit&agrave; del mondo, fondata nel 1088."></p>
-      <p data-en="Researchers, policymakers, and practitioners from across the globe will gather to discuss the latest developments in population studies, demography, and related fields."
-         data-it="Ricercatori, decisori politici e professionisti da tutto il mondo si riuniranno per discutere gli ultimi sviluppi negli studi sulla popolazione, la demografia e i campi correlati."></p>
-    </section>
+  <nav id="tabs">
+    <button data-day="day1" class="active">Day 1 &middot; 3 June</button>
+    <button data-day="day2">Day 2 &middot; 4 June</button>
+    <button data-day="day3">Day 3 &middot; 5 June</button>
+  </nav>
 
-    <!-- Why Volunteer -->
-    <section id="why">
-      <h2 data-en="Why Volunteer?" data-it="Perch&eacute; fare il Volontario?"></h2>
-      <div class="card-grid">
-        <div class="card">
-          <h3 data-en="Networking" data-it="Networking"></h3>
-          <p data-en="Connect with leading researchers and professionals from around the world in population studies."
-             data-it="Entra in contatto con ricercatori e professionisti di fama mondiale nel campo degli studi sulla popolazione."></p>
-        </div>
-        <div class="card">
-          <h3 data-en="Experience" data-it="Esperienza"></h3>
-          <p data-en="Gain hands-on experience in organizing a major international academic conference."
-             data-it="Acquisisci esperienza pratica nell&rsquo;organizzazione di un&rsquo;importante conferenza accademica internazionale."></p>
-        </div>
-        <div class="card">
-          <h3 data-en="Certificate" data-it="Certificato"></h3>
-          <p data-en="Receive a certificate of participation to add to your academic portfolio."
-             data-it="Ricevi un certificato di partecipazione da aggiungere al tuo curriculum accademico."></p>
-        </div>
-        <div class="card">
-          <h3 data-en="Free Access" data-it="Accesso Gratuito"></h3>
-          <p data-en="Attend selected conference sessions and keynote presentations for free."
-             data-it="Partecipa gratuitamente a sessioni selezionate della conferenza e alle presentazioni principali."></p>
-        </div>
-        <div class="card">
-          <h3 data-en="Exclusive Gadgets" data-it="Gadget Esclusivi"></h3>
-          <p data-en="Receive exclusive EPC 2026 gadgets and merchandise as a thank-you for your contribution."
-             data-it="Ricevi gadget e merchandising esclusivi EPC 2026 come ringraziamento per il tuo contributo."></p>
-        </div>
-      </div>
-    </section>
+  <p class="count" id="count"></p>
+  <div class="grid" id="grid"></div>
 
-    <!-- Roles -->
-    <section id="roles">
-      <h2 data-en="Volunteer Roles" data-it="Ruoli dei Volontari"></h2>
-      <div class="card-grid">
-        <div class="card">
-          <h3 data-en="Registration Desk" data-it="Reception"></h3>
-          <p data-en="Welcome attendees, distribute conference materials, and assist with check-in."
-             data-it="Accogliere i partecipanti, distribuire il materiale della conferenza e assistere nelle registrazioni."></p>
-        </div>
-        <div class="card">
-          <h3 data-en="Session Support" data-it="Supporto alle Sessioni"></h3>
-          <p data-en="Help with room setup, timekeeping, and technical equipment during sessions."
-             data-it="Aiutare con l&rsquo;allestimento delle sale, la gestione dei tempi e le attrezzature tecniche durante le sessioni."></p>
-        </div>
-        <div class="card">
-          <h3 data-en="Information Point" data-it="Punto Informazioni"></h3>
-          <p data-en="Guide participants around the venue and answer questions about the programme."
-             data-it="Guidare i partecipanti nella sede e rispondere alle domande sul programma."></p>
-        </div>
-      </div>
-    </section>
+  <div class="lightbox" id="lightbox">
+    <button class="lb-btn" id="lb-close" aria-label="Close">&times;</button>
+    <button class="lb-btn" id="lb-prev" aria-label="Previous">&#8249;</button>
+    <img id="lb-img" src="" alt="">
+    <button class="lb-btn" id="lb-next" aria-label="Next">&#8250;</button>
+    <p class="caption" id="lb-caption"></p>
+  </div>
 
-    <!-- QR Code -->
-    <section id="qrcode-section">
-      <div class="qr-container">
-        <h2 data-en="Scan to Register" data-it="Scansiona per Registrarti"></h2>
-        <p data-en="Scan this QR code with your phone to open the registration form directly."
-           data-it="Scansiona questo QR code con il telefono per aprire direttamente il modulo di registrazione."></p>
-        <div id="qrcode-box">
-          <img src="assets/qrcode.png" alt="QR Code - Volunteer Registration" width="200" height="200">
-        </div>
-      </div>
-    </section>
+  <footer>European Population Conference 2026 &middot; Bologna</footer>
 
-    <!-- Sign Up Form -->
-    <section id="signup">
-      <div class="signup-section">
-        <h2 data-en="Ready to Join?" data-it="Vuoi partecipare?"></h2>
-        <p data-en="Fill out the form below to register as a volunteer. We will get back to you with available shifts and more details."
-           data-it="Compila il modulo qui sotto per registrarti come volontario. Ti contatteremo con i turni disponibili e maggiori dettagli."></p>
+  <script src="manifest.js"></script>
+  <script>
+    const grid = document.getElementById('grid');
+    const countEl = document.getElementById('count');
+    const lightbox = document.getElementById('lightbox');
+    const lbImg = document.getElementById('lb-img');
+    const lbCaption = document.getElementById('lb-caption');
+    const dayLabels = { day1: 'Day 1', day2: 'Day 2', day3: 'Day 3' };
 
-        <form id="volunteer-form" class="volunteer-form">
-          <input type="text" name="_honey" style="display:none">
+    let currentDay = 'day1';
+    let currentIndex = 0;
 
-          <div class="form-grid">
-            <div class="form-group">
-              <label for="name" data-en="Full Name" data-it="Nome e Cognome"></label>
-              <input type="text" id="name" name="name" required
-                     data-placeholder-en="Enter your full name"
-                     data-placeholder-it="Inserisci nome e cognome">
-            </div>
-            <div class="form-group">
-              <label for="email" data-en="Email Address" data-it="Indirizzo Email"></label>
-              <input type="email" id="email" name="email" required
-                     data-placeholder-en="your.email@example.com"
-                     data-placeholder-it="tua.email@esempio.com">
-            </div>
-            <div class="form-group">
-              <label for="phone" data-en="Phone Number" data-it="Numero di Telefono"></label>
-              <input type="tel" id="phone" name="phone"
-                     data-placeholder-en="+39 ..."
-                     data-placeholder-it="+39 ...">
-            </div>
-            <div class="form-group">
-              <label for="affiliation" data-en="University / Affiliation" data-it="Universit&agrave; / Affiliazione"></label>
-              <input type="text" id="affiliation" name="affiliation"
-                     data-placeholder-en="e.g. University of Bologna"
-                     data-placeholder-it="es. Universit&agrave; di Bologna">
-            </div>
-            <div class="form-group full-width">
-              <label for="role" data-en="Preferred Role" data-it="Ruolo Preferito"></label>
-              <select id="role" name="preferred_role">
-                <option value="" data-en="-- Select a role --" data-it="-- Seleziona un ruolo --"></option>
-                <option value="registration" data-en="Registration Desk" data-it="Reception"></option>
-                <option value="session" data-en="Session Support" data-it="Supporto alle Sessioni"></option>
-                <option value="info" data-en="Information Point" data-it="Punto Informazioni"></option>
-                <option value="any" data-en="Any role (flexible)" data-it="Qualsiasi ruolo (flessibile)"></option>
-              </select>
-            </div>
-            <div class="form-group full-width">
-              <label for="availability" data-en="Availability (select the days)" data-it="Disponibilit&agrave; (seleziona i giorni)"></label>
-              <div class="checkbox-group">
-                <label class="checkbox-label">
-                  <input type="checkbox" name="availability" value="June 3">
-                  <span data-en="Wed 3 June" data-it="Mer 3 Giugno"></span>
-                </label>
-                <label class="checkbox-label">
-                  <input type="checkbox" name="availability" value="June 4">
-                  <span data-en="Thu 4 June" data-it="Gio 4 Giugno"></span>
-                </label>
-                <label class="checkbox-label">
-                  <input type="checkbox" name="availability" value="June 5">
-                  <span data-en="Fri 5 June" data-it="Ven 5 Giugno"></span>
-                </label>
-                <label class="checkbox-label">
-                  <input type="checkbox" name="availability" value="June 6">
-                  <span data-en="Sat 6 June" data-it="Sab 6 Giugno"></span>
-                </label>
-              </div>
-            </div>
-            <div class="form-group full-width">
-              <label for="notes" data-en="Notes (optional)" data-it="Note (facoltativo)"></label>
-              <textarea id="notes" name="notes" rows="3"
-                        data-placeholder-en="Any additional information..."
-                        data-placeholder-it="Eventuali informazioni aggiuntive..."></textarea>
-            </div>
-          </div>
+    const observer = new IntersectionObserver(entries => {
+      for (const entry of entries) {
+        if (!entry.isIntersecting) continue;
+        const img = entry.target;
+        img.src = img.dataset.src;
+        img.addEventListener('load', () => img.classList.add('loaded'), { once: true });
+        observer.unobserve(img);
+      }
+    }, { rootMargin: '400px' });
 
-          <div class="form-group full-width gdpr-group">
-            <label class="checkbox-label gdpr-label">
-              <input type="checkbox" id="gdpr-consent" required>
-              <span data-en="I consent to the processing of my personal data in accordance with the <strong>EU General Data Protection Regulation (GDPR)</strong>. My data will be used solely for the purpose of organizing volunteer activities for EPC 2026 and will not be shared with third parties. I understand I can request access, correction, or deletion of my data at any time by contacting <a href='mailto:epc2026@unibo.it'>epc2026@unibo.it</a>."
-                    data-it="Acconsento al trattamento dei miei dati personali ai sensi del <strong>Regolamento Generale sulla Protezione dei Dati (GDPR) dell&rsquo;UE</strong>. I miei dati saranno utilizzati esclusivamente per l&rsquo;organizzazione delle attivit&agrave; di volontariato per EPC 2026 e non saranno condivisi con terze parti. Comprendo di poter richiedere l&rsquo;accesso, la rettifica o la cancellazione dei miei dati in qualsiasi momento contattando <a href='mailto:epc2026@unibo.it'>epc2026@unibo.it</a>."></span>
-            </label>
-          </div>
+    function render(day) {
+      currentDay = day;
+      const files = PHOTOS[day] || [];
+      grid.innerHTML = '';
+      countEl.textContent = files.length + ' photos';
+      files.forEach((name, i) => {
+        const a = document.createElement('a');
+        a.href = 'photos/' + day + '/' + name;
+        a.addEventListener('click', e => { e.preventDefault(); openLightbox(i); });
+        const img = document.createElement('img');
+        img.dataset.src = 'thumbs/' + day + '/' + name;
+        img.alt = dayLabels[day] + ' photo ' + (i + 1);
+        img.loading = 'lazy';
+        a.appendChild(img);
+        grid.appendChild(a);
+        observer.observe(img);
+      });
+      window.scrollTo({ top: 0 });
+    }
 
-          <button type="submit" class="submit-button" data-en="Submit Registration" data-it="Invia Registrazione"></button>
-          <div id="form-message" class="form-message" style="display:none;"></div>
-        </form>
-      </div>
-    </section>
-  </main>
+    function openLightbox(i) {
+      currentIndex = i;
+      showCurrent();
+      lightbox.classList.add('open');
+      document.body.style.overflow = 'hidden';
+    }
 
-  <!-- Footer -->
-  <footer class="footer">
-    <p>
-      &copy; 2026 European Population Conference &middot;
-      <a href="https://www.unibo.it" target="_blank">Alma Mater Studiorum &ndash; Universit&agrave; di Bologna</a>
-    </p>
-  </footer>
+    function closeLightbox() {
+      lightbox.classList.remove('open');
+      lbImg.src = '';
+      document.body.style.overflow = '';
+    }
 
-  <script src="assets/main.js"></script>
+    function showCurrent() {
+      const files = PHOTOS[currentDay];
+      const name = files[currentIndex];
+      lbImg.src = 'photos/' + currentDay + '/' + name;
+      lbCaption.textContent = dayLabels[currentDay] + ' · ' + (currentIndex + 1) + ' / ' + files.length;
+    }
+
+    function step(delta) {
+      const files = PHOTOS[currentDay];
+      currentIndex = (currentIndex + delta + files.length) % files.length;
+      showCurrent();
+    }
+
+    document.querySelectorAll('#tabs button').forEach(btn => {
+      btn.addEventListener('click', () => {
+        document.querySelectorAll('#tabs button').forEach(b => b.classList.remove('active'));
+        btn.classList.add('active');
+        render(btn.dataset.day);
+      });
+    });
+
+    document.getElementById('lb-close').addEventListener('click', closeLightbox);
+    document.getElementById('lb-prev').addEventListener('click', () => step(-1));
+    document.getElementById('lb-next').addEventListener('click', () => step(1));
+    lightbox.addEventListener('click', e => { if (e.target === lightbox) closeLightbox(); });
+    document.addEventListener('keydown', e => {
+      if (!lightbox.classList.contains('open')) return;
+      if (e.key === 'Escape') closeLightbox();
+      if (e.key === 'ArrowLeft') step(-1);
+      if (e.key === 'ArrowRight') step(1);
+    });
+
+    render('day1');
+  </script>
 </body>
 </html>
